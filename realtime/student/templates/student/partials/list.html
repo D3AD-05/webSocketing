@@ -1,0 +1,39 @@
+{% with oob_attr=oob|default:False %}
+<div id="students-list" {% if oob_attr %}hx-swap-oob="outerHTML"{% endif %}>
+  <table border="1" width="500" cellspacing="0" cellpadding="6">
+      <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+      </tr>
+
+      {% for s in students %}
+      <tr id="row-{{ s.id }}">
+          <td>{{ s.name }}</td>
+          <td>{{ s.email }}</td>
+          <td>
+              <button hx-get="{% url 'students:detail' s.id %}"
+                      hx-target="#student-detail"
+                      hx-swap="innerHTML">
+                   View
+              </button>
+                  <button hx-get="{% url 'students:edit' s.id %}"
+                      hx-target="#modal"
+                      hx-swap="innerHTML">
+                   Edit
+                  </button>
+              <button 
+                  hx-post="{% url 'students:delete' s.id %}"
+                  hx-target="#students-list"
+                  hx-swap="innerHTML"
+                  hx-confirm="Are you sure you want to delete?">
+                  Delete
+              </button>
+          </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3">No students yet</td></tr>
+      {% endfor %}
+  </table>
+</div>
+{% endwith %}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Realtime Demo{% endblock %}</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+  <script>
+    // Add Django CSRF token header to all HTMX requests
+    (function() {
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+      }
+      document.addEventListener('htmx:configRequest', function(evt) {
+        const token = getCookie('csrftoken');
+        if (token) {
+          evt.detail.headers['X-CSRFToken'] = token;
+        }
+      });
+    })();
+  </script>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 6px 10px; }
+    th { background: #f3f3f3; }
+    button { margin-right: 6px; }
+  </style>
+</head>
+<body>
+  {% block content %}{% endblock %}
+</body>
+</html>

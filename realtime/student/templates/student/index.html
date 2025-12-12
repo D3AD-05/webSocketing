@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Students</h1>
+ <script  type="text/javascript">
+       
+        const url = `ws://${window.location.host}/ws/socket-server/`;
+        const realTimeUpdate = new WebSocket(url);
+
+        realTimeUpdate.onmessage = function(e) {
+            console.log("startesss")
+            const data = JSON.parse(e.data);
+            console.log("data is ",data)
+            if (data.type === "student_update") {
+                // Use HTMX to refresh the list container
+                htmx.ajax('GET', "{% url 'students:list' %}", "#students-list");
+            }
+        };
+    </script>
+
+<div>
+    <div id="students-list" 
+         hx-get="{% url 'students:list' %}" 
+         hx-trigger="load" 
+         hx-swap="innerHTML">
+    </div>
+
+    <div id="student-detail" style="margin-top:16px; background:#f8f8f8; padding:12px;"></div>
+
+    <div id="modal"></div>
+
+    <button
+        hx-get="{% url 'students:create' %}"
+        hx-target="#modal"
+        hx-swap="innerHTML">
+        + Add Student
+    </button>
+</div>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+<div style="background:#eee; padding:20px;">
+    <div style="color:blue; font-weight:bold;">HTMX MODAL TEST: If you see this, modal swapping works.</div>
+    <h3>{% if student %} Edit Student {% else %} Add Student {% endif %}</h3>
+
+    {% if error %}
+    <div style="color:#b00; margin-bottom:8px;">{{ error }}</div>
+    {% endif %}
+
+    <form 
+        hx-post="{% if student %}{% url 'students:edit' student.id %}{% else %}{% url 'students:create' %}{% endif %}"
+        hx-target="#students-list"
+        hx-swap="innerHTML"
+    >
+        {% csrf_token %}
+        <label>Name:</label>
+        <input name="name" value="{{ student.name|default:'' }}"><br><br>
+
+        <label>Email:</label>
+        <input name="email" value="{{ student.email|default:'' }}"><br><br>
+
+        <button type="submit">Save</button>
+        <button type="button" onclick="document.getElementById('modal').innerHTML='';">Cancel</button>
+    </form>
+</div>
